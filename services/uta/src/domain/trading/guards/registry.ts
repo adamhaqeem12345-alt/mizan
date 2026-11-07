@@ -2,11 +2,17 @@ import type { OperationGuard, GuardRegistryEntry } from './types.js'
 import { MaxPositionSizeGuard } from './max-position-size.js'
 import { CooldownGuard } from './cooldown.js'
 import { SymbolWhitelistGuard } from './symbol-whitelist.js'
+import { ShariahScListGuard } from './shariah-sc-list.js'
+import { NoShortGuard } from './no-short.js'
+import { CashOnlyGuard } from './cash-only.js'
 
 const builtinGuards: GuardRegistryEntry[] = [
   { type: 'max-position-size', create: (opts) => new MaxPositionSizeGuard(opts) },
   { type: 'cooldown',          create: (opts) => new CooldownGuard(opts) },
   { type: 'symbol-whitelist',  create: (opts) => new SymbolWhitelistGuard(opts) },
+  { type: 'shariah-sc-list',   create: (opts) => new ShariahScListGuard(opts) },
+  { type: 'no-short',          create: () => new NoShortGuard() },
+  { type: 'cash-only',         create: () => new CashOnlyGuard() },
 ]
 
 const registry = new Map<string, GuardRegistryEntry['create']>(

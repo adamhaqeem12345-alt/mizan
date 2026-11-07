@@ -16,8 +16,16 @@ export interface GuardEntry {
 
 // ==================== Presets ====================
 
+/** Mizan: Shariah and Malaysian-rule guards, listed first for every account. */
+const MIZAN_GUARD_TYPES: GuardType[] = [
+  { type: 'shariah-sc-list', label: 'Shariah (SC list)', desc: 'Mizan: only ordinary shares; buys must be on the SC Shariah Advisory Council list.' },
+  { type: 'no-short', label: 'No Short Selling', desc: 'Mizan: never sell more shares than are held.' },
+  { type: 'cash-only', label: 'Cash Only', desc: 'Mizan: buys must fit within cash on hand; no margin.' },
+]
+
 /** Crypto guards (superset — includes max-leverage) */
 export const CRYPTO_GUARD_TYPES: GuardType[] = [
+  ...MIZAN_GUARD_TYPES,
   { type: 'max-position-size', label: 'Max Position Size', desc: 'Limits each position as a percentage of account equity.' },
   { type: 'max-leverage', label: 'Max Leverage', desc: 'Caps leverage for all symbols, with optional per-symbol overrides.' },
   { type: 'cooldown', label: 'Cooldown', desc: 'Enforces a minimum interval between trades on the same symbol.' },
@@ -26,6 +34,7 @@ export const CRYPTO_GUARD_TYPES: GuardType[] = [
 
 /** Securities guards (no max-leverage) */
 export const SECURITIES_GUARD_TYPES: GuardType[] = [
+  ...MIZAN_GUARD_TYPES,
   { type: 'max-position-size', label: 'Max Position Size', desc: 'Limits each position as a percentage of account equity.' },
   { type: 'cooldown', label: 'Cooldown', desc: 'Enforces a minimum interval between trades on the same symbol.' },
   { type: 'symbol-whitelist', label: 'Symbol Whitelist', desc: 'Restricts trading to a specific set of symbols.' },
@@ -36,6 +45,7 @@ const GUARD_DEFAULTS: Record<string, Record<string, unknown>> = {
   'max-leverage': { maxLeverage: 10 },
   cooldown: { minIntervalMs: 60000 },
   'symbol-whitelist': { symbols: [] },
+  'shariah-sc-list': { listFile: 'mizan/data/sc-shariah-list-2026-05-29.json' },
 }
 
 // ==================== Summary ====================
@@ -57,6 +67,10 @@ export function guardSummary(g: GuardEntry): string {
     case 'symbol-whitelist': {
       const symbols = (g.options.symbols as string[] | undefined) ?? []
       return symbols.length === 0 ? 'none' : `${symbols.length} symbols`
+    }
+    case 'shariah-sc-list': {
+      const symbols = g.options.symbols as string[] | undefined
+      return symbols ? `${symbols.length} symbols` : String(g.options.listFile ?? 'no list')
     }
     default:
       return g.type
