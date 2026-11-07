@@ -48,10 +48,15 @@ beforeEach(() => {
 
 afterEach(cleanup)
 
-it.each(['/', '/quick-start'])('adopts %s as the independent Quick Start entry', async path => {
-  render(<MemoryRouter initialEntries={[path]}><UrlAdopter /></MemoryRouter>)
+it('adopts /quick-start as the independent Quick Start entry', async () => {
+  render(<MemoryRouter initialEntries={['/quick-start']}><UrlAdopter /></MemoryRouter>)
   await waitFor(() => expect(mocks.openOrFocus).toHaveBeenCalledWith({ kind: 'quick-start', params: {} }))
   expect(mocks.setSidebar).toHaveBeenCalledWith('quick-start')
+})
+
+it('opens / on the Mizan trading dashboard', async () => {
+  render(<MemoryRouter initialEntries={['/']}><UrlAdopter /></MemoryRouter>)
+  await waitFor(() => expect(mocks.openOrFocus).toHaveBeenCalledWith({ kind: 'market-list', params: {} }))
 })
 
 it('preserves the Chat Harness landing route', async () => {

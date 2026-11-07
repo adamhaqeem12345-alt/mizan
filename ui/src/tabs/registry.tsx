@@ -13,7 +13,7 @@ import { IssueDetailPage } from '../pages/IssueDetailPage'
 import { TrackedIssueDetailPage } from '../pages/TrackedIssueDetailPage'
 import { OfficePage } from '../pages/OfficePage'
 import { NewsPage } from '../pages/NewsPage'
-import { MarketPage } from '../pages/MarketPage'
+import { MizanHomePage } from '../pages/MizanHomePage'
 import { MarketRotationPage } from '../pages/MarketRotationPage'
 import { MarketBoardPage } from '../pages/MarketBoardPage'
 import { MARKET_BOARD_TITLES } from '../pages/market-board-titles'
@@ -230,10 +230,11 @@ const newsModule: ViewModule<'news'> = {
 
 const marketListModule: ViewModule<'market-list'> = {
   kind: 'market-list',
-  title: () => 'Market',
+  title: () => 'Mizan',
   toUrl: () => '/market',
   shell: 'market',
-  Component: () => <MarketPage />,
+  // Mizan: the Bursa Shariah dashboard replaces the US/FX market overview.
+  Component: () => <MizanHomePage />,
 }
 
 const marketRotationModule: ViewModule<'market-rotation'> = {

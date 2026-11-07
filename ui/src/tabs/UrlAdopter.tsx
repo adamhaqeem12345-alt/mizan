@@ -30,7 +30,8 @@ export function UrlAdopter() {
       <Routes>
         {/* Adopt the launch surface directly so a previously focused tab cannot
             race a redirect and replace the default entry during startup. */}
-        <Route path="/" element={<AdoptStatic spec={{ kind: 'quick-start', params: {} }} />} />
+        {/* Mizan: open on the trading dashboard. */}
+        <Route path="/" element={<Navigate to="/market" replace />} />
         <Route path="/quick-start" element={<AdoptStatic spec={{ kind: 'quick-start', params: {} }} />} />
         <Route path="/design/:project" element={<AdoptDesignProject />} />
 
