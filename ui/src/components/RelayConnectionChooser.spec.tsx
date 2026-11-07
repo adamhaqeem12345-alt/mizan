@@ -11,11 +11,11 @@ import { i18n } from '../i18n'
 import { RelayConnectionChooser } from './RelayConnectionChooser'
 
 const status = { schemaVersion: 1 as const, generation: 0, switching: false, target: {
-  machine: 'local', machineName: 'This computer', project: 'demo', projectName: 'Demo AliceProject',
+  machine: 'local', machineName: 'This computer', project: 'demo', projectName: 'Demo Mizan project',
 } }
 const fleet = [
   { key: 'local', displayName: 'This computer', connection: 'local', issue: null, projects: [
-    { key: 'demo', id: 'demo', displayName: 'Demo AliceProject', available: true, runtime: { class: 'running', state: 'ready', webEndpoint: 'http://localhost:47331' } },
+    { key: 'demo', id: 'demo', displayName: 'Demo Mizan project', available: true, runtime: { class: 'running', state: 'ready', webEndpoint: 'http://localhost:47331' } },
   ] },
   { key: 'studio', displayName: 'Studio Mac', connection: 'online', issue: null, projects: [
     { key: 'research', id: 'research', displayName: 'Research desk', available: true, runtime: { class: 'running', state: 'ready', webEndpoint: 'http://localhost:47332' } },
@@ -36,7 +36,7 @@ describe('RelayConnectionChooser', () => {
     render(<RelayConnectionChooser open onOpenChange={vi.fn()} initialStatus={status} />)
     expect(screen.getByText('Current location:')).toBeTruthy()
     expect(screen.getByText('Finding locations…')).toBeTruthy()
-    expect(screen.getByText('Checking AliceProjects…')).toBeTruthy()
+    expect(screen.getByText('Checking Mizan projects…')).toBeTruthy()
     expect(screen.getByText('Destination')).toBeTruthy()
     expect(screen.getByRole('dialog').querySelector('button[disabled]')?.textContent).toContain('Reconnect')
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeTruthy()

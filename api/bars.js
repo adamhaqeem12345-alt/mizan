@@ -1,0 +1,62 @@
+/**
+ * Mizan web: daily bars for one Bursa Malaysia stock, from Yahoo Finance.
+ *
+ * GET /api/bars?symbol=5347.KL&interval=1d&count=520
+ * Returns the same shape as OpenAlice's /api/bars ({ results, meta }) so the
+ * dashboard code is shared. Only Bursa codes (`<code>.KL`) are accepted, so
+ * this cannot be used as a general proxy.
+ */
+
+const BURSA_SYMBOL = /^\d{4}[A-Z0-9]{0,2}\.KL$/
+const MAX_BARS = 1300
+
+function rangeFor(count) {
+  if (count <= 60) return '6mo'
+  if (count <= 240) return '2y'
+  return '5y'
+}
+
+export async function fetchBursaBars(symbol, count) {
+  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=${rangeFor(count)}`
+  const res = await fetch(url, { headers: { 'user-agent': 'Mozilla/5.0 (Mizan; +https://mizan.cuddleia.com)' } })
+  if (!res.ok) throw new Error(`price source returned ${res.status}`)
+  const body = await res.json()
+  const chart = body?.chart?.result?.[0]
+  if (!chart?.timestamp) return []
+  const offset = chart.meta?.gmtoffset ?? 8 * 3600
+  const q = chart.indicators?.quote?.[0] ?? {}
+  const bars = []
+  chart.timestamp.forEach((t, i) => {
+    const close = q.close?.[i]
+    if (close == null) return
+    bars.push({
+      date: new Date((t + offset) * 1000).toISOString().slice(0, 10),
+      open: q.open?.[i] ?? close,
+      high: q.high?.[i] ?? close,
+      low: q.low?.[i] ?? close,
+      close,
+      volume: q.volume?.[i] ?? null,
+    })
+  })
+  // Yahoo can repeat the current day; keep the last row per date.
+  const byDate = new Map(bars.map(b => [b.date, b]))
+  return [...byDate.values()].slice(-count)
+}
+
+export async function GET(request) {
+  const params = new URL(request.url).searchParams
+  const symbol = (params.get('symbol') ?? '').toUpperCase()
+  const count = Math.min(Math.max(Number.parseInt(params.get('count') ?? '260', 10) || 260, 1), MAX_BARS)
+  if (!BURSA_SYMBOL.test(symbol) || (params.get('interval') ?? '1d') !== '1d') {
+    return Response.json({ results: null, meta: null, error: 'Only daily bars for Bursa codes like 5347.KL are available' }, { status: 400 })
+  }
+  try {
+    const results = await fetchBursaBars(symbol, count)
+    return Response.json(
+      { results, meta: null, ...(results.length ? {} : { error: 'no data' }) },
+      { headers: { 'cache-control': 'public, s-maxage=3600, stale-while-revalidate=86400' } },
+    )
+  } catch (err) {
+    return Response.json({ results: null, meta: null, error: err instanceof Error ? err.message : 'failed' }, { status: 502 })
+  }
+}

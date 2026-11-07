@@ -70,7 +70,7 @@ describe('injectWorkspaceContext — instructions', () => {
 
     expect(await read('CLAUDE.md')).toBe(instruction);
     expect(await read('AGENTS.md')).toBe(instruction);
-    expect(instruction).toContain('You are Alice, an autonomous agent from the OpenAlice project.');
+    expect(instruction).toContain('You are Mizan, the trading-desk agent of the Mizan project (built on');
   });
 
   it('does not touch CLAUDE.md / AGENTS.md when injectInstructions is false', async () => {

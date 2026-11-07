@@ -27,7 +27,7 @@ beforeEach(() => {
 afterEach(() => { cleanup(); vi.clearAllMocks(); Reflect.deleteProperty(window, 'openAlice') })
 
 describe('AliceLocationSection', () => {
-  it('keeps client-owned Machine identity separate from the backend-owned AliceProject', () => {
+  it('keeps client-owned Machine identity separate from the backend-owned Mizan project', () => {
     mocks.getBackendConnection.mockReturnValue({ kind: 'local', endpoint: '127.0.0.1:54000' })
     mocks.useRelayConnection.mockReturnValue({
       status: { target: { machine: 'studio', machineName: 'Studio Mac', project: 'research' } },
@@ -39,7 +39,7 @@ describe('AliceLocationSection', () => {
     })
 
     render(<AliceLocationSection />)
-    expect(screen.getByText('Where Alice is working')).toBeTruthy()
+    expect(screen.getByText('Where Mizan is working')).toBeTruthy()
     expect(screen.getByText('Studio Mac')).toBeTruthy()
     expect(screen.getByText('Research desk')).toBeTruthy()
     expect(screen.getByText('Connected · Remote')).toBeTruthy()
@@ -65,7 +65,7 @@ describe('AliceLocationSection', () => {
       fleet: [], loading: false, busy: false, error: null, refresh: vi.fn(), connect: vi.fn(),
     })
     mocks.useAliceProject.mockReturnValue({
-      project: { id: 'local-1', displayName: 'Local Alice', home: '/home/alice', appRoot: null },
+      project: { id: 'local-1', displayName: 'Local Mizan', home: '/home/alice', appRoot: null },
       loading: false, error: null, refresh: vi.fn(),
     })
 

@@ -93,7 +93,7 @@ export function RelaySetup({ status }: { status: RelayStatus }) {
 
   return <main className="flex h-dvh flex-col overflow-hidden bg-background text-foreground">
     <header className="flex h-12 shrink-0 items-center border-b border-border/70 px-5 sm:px-8">
-      <div className="flex items-center gap-2 text-sm font-semibold tracking-tight"><Box className="size-5 text-primary" aria-hidden />OpenAlice</div>
+      <div className="flex items-center gap-2 text-sm font-semibold tracking-tight"><Box className="size-5 text-primary" aria-hidden />Mizan</div>
     </header>
 
     <div className="mx-auto flex w-full max-w-6xl min-h-0 flex-1 flex-col overflow-hidden px-5 py-[clamp(0.75rem,3dvh,1.75rem)] sm:px-8">

@@ -298,7 +298,7 @@ describe('Connector overview state hierarchy', () => {
     const service = screen.getByRole('heading', { name: 'Delivery service' }).closest('section') as HTMLElement
     expect(within(service).getByText('Unavailable')).toBeTruthy()
     expect(within(service).getByText(
-      'OpenAlice could not reach the delivery service. Your Inbox keeps working.',
+      'Mizan could not reach the delivery service. Your Inbox keeps working.',
     )).toBeTruthy()
     expect(service.className).toContain('border-destructive/25')
     expect(within(service).getByText('Technical details')).toBeTruthy()

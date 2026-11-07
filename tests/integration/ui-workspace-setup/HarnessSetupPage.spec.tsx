@@ -45,7 +45,7 @@ it('shows background setup progress without requiring a manual click', () => {
 it.each([
   ['AutoQuant', AutoQuantSetupPage],
   ['Auto Prediction', AutoPredictionSetupPage],
-  ['Ask Alice', ChatSetupPage],
+  ['Ask Mizan', ChatSetupPage],
 ] as const)('retains %s progress, failures and retry across navigation', async (name, Page) => {
   let reject!: (error: Error) => void
   mocks.initialize.mockImplementationOnce(() => new Promise((_, fail) => { reject = fail }))

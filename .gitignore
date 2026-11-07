@@ -65,3 +65,4 @@ packages/ibkr/ref/CMakeLists.txt
 
 # Local source-test receipts (CI uploads these as artifacts).
 /artifacts/tests/
+/ui/dist-web/

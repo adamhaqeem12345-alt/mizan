@@ -31,7 +31,7 @@ beforeEach(async () => {
 afterEach(() => { cleanup(); vi.clearAllMocks(); Reflect.deleteProperty(window, 'openAlice') })
 it('shows three parent objects with optional read-only default content, without selection or a chooser', () => {
   render(<VersionOverviewSection />)
-  expect(screen.getAllByRole('heading', { level: 3 }).map(node => node.textContent)).toEqual(['App', 'Backend', 'Alice Project'])
+  expect(screen.getAllByRole('heading', { level: 3 }).map(node => node.textContent)).toEqual(['App', 'Backend', 'Mizan Project'])
   expect(screen.queryByText('my-chat · Default')).toBeNull()
   fireEvent.click(screen.getByRole('button', { name: 'Project details' }))
   expect(screen.getByText('my-chat · Default')).toBeTruthy()
@@ -45,7 +45,7 @@ it('prepares the project directly, then requires one explicit update action', as
   render(<VersionOverviewSection />)
   fireEvent.click(within(document.getElementById('settings-version-project')!).getByRole('button', { name: 'View update' }))
   await waitFor(() => expect(mocks.updates.review).toHaveBeenCalledWith({ client: false, backend: false, projectUnits: ['template:chat'] }))
-  const apply = await screen.findByRole('button', { name: 'Update Alice Project' })
+  const apply = await screen.findByRole('button', { name: 'Update Mizan Project' })
   await waitFor(() => expect(apply.hasAttribute('disabled')).toBe(false))
   expect(mocks.updates.approve).not.toHaveBeenCalled()
   fireEvent.click(apply)
@@ -60,7 +60,7 @@ it('keeps a stale review response from approving a changed default', async () =>
   mocks.updates.projectWorkspaces[0] = { ...mocks.updates.projectWorkspaces[0], workspace: null }
   rerender(<VersionOverviewSection />)
   finish({ blockers: [], fingerprint: 'stale' })
-  await waitFor(() => expect(screen.getByRole('button', { name: 'Update Alice Project' }).hasAttribute('disabled')).toBe(true))
+  await waitFor(() => expect(screen.getByRole('button', { name: 'Update Mizan Project' }).hasAttribute('disabled')).toBe(true))
   expect(mocks.updates.approve).not.toHaveBeenCalled()
 })
 it('opens native confirmation directly, without a second review step', async () => {

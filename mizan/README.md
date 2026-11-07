@@ -59,3 +59,23 @@ bypass-permissions).
 ## Licence
 
 AGPL-3.0, as upstream. This is a demo and research tool, not investment advice.
+
+## Web version (mizan.cuddleia.com)
+
+A browser-only build of the dashboard with a paper account and trade journal,
+deployed on Vercel from this branch (`vercel.json`).
+
+```bash
+pnpm --filter open-alice-ui run dev:web     # http://127.0.0.1:5180/web.html
+pnpm --filter open-alice-ui run build:web   # ui/dist-web
+```
+
+- `ui/web.html` → `ui/src/mizan/web/` (app shell, `PaperDesk`).
+- `ui/src/mizan/paper.ts`: the paper account. Orders fill at the last daily
+  close and pass the same rules as the UTA guards (SC list, cash only, no short
+  selling) plus Bursa's 100-share board lot. Refused orders stay in the journal.
+- `api/bars.js`: a Vercel function serving Yahoo daily bars for Bursa codes
+  (`<code>.KL`) only, cached for an hour.
+
+The web version has no AI agent: the agent runs on the user's own computer
+through the desktop version.

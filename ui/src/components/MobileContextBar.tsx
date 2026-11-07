@@ -59,7 +59,7 @@ export function MobileContextBar({
           </span>
         </>
       ) : (
-        <span className="min-w-0 truncate px-1 text-sm font-semibold text-foreground">OpenAlice</span>
+        <span className="min-w-0 truncate px-1 text-sm font-semibold text-foreground">Mizan</span>
       )}
     </div>
   )

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { ArrowUpRight, Plus, ShieldCheck, X } from 'lucide-react'
 import {
   createChart,
@@ -8,7 +8,7 @@ import {
   type IChartApi,
   type UTCTimestamp,
 } from 'lightweight-charts'
-import { barsApi, type HistoricalBar } from '../api/market'
+import type { HistoricalBar } from '../api/market'
 import { PageHeader } from '../components/PageHeader'
 import { Skeleton } from '../components/StateViews'
 import { Button } from '../components/ui/button'
@@ -24,6 +24,7 @@ import {
   searchShariah,
   toYahoo,
 } from '../mizan/scList'
+import { useBars } from '../mizan/useBars'
 
 const WATCHLIST_KEY = 'mizan.watchlist'
 const HISTORY_BARS = 520 // ~2 years of trading days: 1 year to fit, 1 year to check coverage
@@ -47,7 +48,19 @@ const toTime = (date: string) => Math.floor(new Date(`${date}T00:00:00Z`).getTim
 
 // ==================== Page ====================
 
-export function MizanHomePage() {
+/** Latest close for the selected stock, handed to an optional trade panel. */
+export interface MizanQuote {
+  code: string
+  name: string
+  close: number
+  date: string
+}
+
+export function MizanHomePage({ standalone = false, renderTrade }: {
+  /** Web build: no app shell, so no page header or link into the full chart tab. */
+  standalone?: boolean
+  renderTrade?: (quote: MizanQuote) => ReactNode
+} = {}) {
   const [watchlist, setWatchlist] = useState<string[]>(loadWatchlist)
   const [selected, setSelected] = useState<string>(() => loadWatchlist()[0] ?? DEFAULT_WATCHLIST[0])
 
@@ -58,10 +71,12 @@ export function MizanHomePage() {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <PageHeader
-        title="Mizan · Bursa Shariah"
-        description={`Shariah-compliant shares only, from the SC Shariah Advisory Council list of ${SC_LIST_DATE} (${SC_LIST_STOCKS} stocks). Paper trading, cash only, no short selling.`}
-      />
+      {!standalone && (
+        <PageHeader
+          title="Mizan · Bursa Shariah"
+          description={`Shariah-compliant shares only, from the SC Shariah Advisory Council list of ${SC_LIST_DATE} (${SC_LIST_STOCKS} stocks). Paper trading, cash only, no short selling.`}
+        />
+      )}
       <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-4 py-4 md:px-8">
         <section className="flex flex-col gap-2" aria-label="Watchlist">
           <div className="max-w-sm">
@@ -89,7 +104,7 @@ export function MizanHomePage() {
           </ul>
         </section>
         <section className="flex min-w-0 flex-col gap-4 border-t border-border/60 pt-4">
-          {selected ? <StockPanel code={selected} /> : <p className="text-[13px] text-muted-foreground">Add a stock to start.</p>}
+          {selected ? <StockPanel code={selected} standalone={standalone} renderTrade={renderTrade} /> : <p className="text-[13px] text-muted-foreground">Add a stock to start.</p>}
         </section>
       </div>
     </div>
@@ -178,7 +193,7 @@ function WatchRow({ code, active, onSelect, onRemove }: {
 
 // ==================== Stock panel ====================
 
-function StockPanel({ code }: { code: string }) {
+function StockPanel({ code, standalone, renderTrade }: { code: string; standalone: boolean; renderTrade?: (quote: MizanQuote) => ReactNode }) {
   const openOrFocus = useWorkspace((s) => s.openOrFocus)
   const security = findShariah(code)
   const bars = useBars(code, HISTORY_BARS)
@@ -203,13 +218,15 @@ function StockPanel({ code }: { code: string }) {
         </div>
         <div className="flex items-center gap-3">
           {last && <span className="font-mono text-[22px] font-semibold text-foreground">{rm(last.close)}</span>}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => openOrFocus({ kind: 'market-detail', params: { assetClass: 'equity', symbol: toYahoo(code) } })}
-          >
-            Full chart <ArrowUpRight size={13} />
-          </Button>
+          {!standalone && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => openOrFocus({ kind: 'market-detail', params: { assetClass: 'equity', symbol: toYahoo(code) } })}
+            >
+              Full chart <ArrowUpRight size={13} />
+            </Button>
+          )}
         </div>
       </div>
 
@@ -224,6 +241,8 @@ function StockPanel({ code }: { code: string }) {
         <StatsCard stats={stats} last={last?.close} />
         <RulesCard />
       </div>
+
+      {renderTrade && last && renderTrade({ code, name: security?.name ?? code, close: last.close, date: last.date.slice(0, 10) })}
 
       <p className="text-[11px] leading-4 text-muted-foreground">
         The forecast range is a statistical estimate from past daily price moves. It is not a recommendation to buy,
@@ -316,6 +335,9 @@ function PriceChart({ bars, forecast, sma50 }: { bars: HistoricalBar[]; forecast
       grid: { vertLines: { color: colors.grid }, horzLines: { color: colors.grid } },
       rightPriceScale: { borderColor: colors.grid },
       timeScale: { borderColor: colors.grid },
+      // Leave the mouse wheel and vertical swipes to the page so it scrolls past the chart.
+      handleScroll: { mouseWheel: false, pressedMouseMove: true, horzTouchDrag: true, vertTouchDrag: false },
+      handleScale: { mouseWheel: false, pinch: true, axisPressedMouseMove: true },
       autoSize: true,
     })
     chartRef.current = chart
@@ -348,34 +370,14 @@ function PriceChart({ bars, forecast, sma50 }: { bars: HistoricalBar[]; forecast
       line('low', LineStyle.Dashed)
     }
 
-    // Show the last year plus the forecast window.
-    const from = daily[Math.max(0, daily.length - 252)]
-    const to = forecast?.points.at(-1)?.date ?? daily.at(-1)?.date
-    if (from && to) chart.timeScale().setVisibleRange({ from: toTime(from.date), to: toTime(to) })
+    // Show the last year plus the forecast window, once autoSize has measured the container.
+    const frame = requestAnimationFrame(() => {
+      chart.timeScale().setVisibleLogicalRange({ from: Math.max(0, daily.length - 252), to: daily.length - 1 + (forecast?.points.length ?? 0) })
+    })
 
-    return () => { chart.remove(); chartRef.current = null }
+    return () => { cancelAnimationFrame(frame); chart.remove(); chartRef.current = null }
   }, [bars, forecast, sma50, theme, palette])
 
   return <div ref={containerRef} className="h-[360px] w-full" aria-label="Price chart with forecast range" role="img" />
 }
 
-// ==================== Data ====================
-
-function useBars(code: string, count: number) {
-  const [state, setState] = useState<{ data: HistoricalBar[] | null; loading: boolean; error: string | null }>({ data: null, loading: true, error: null })
-
-  useEffect(() => {
-    let alive = true
-    setState({ data: null, loading: true, error: null })
-    barsApi.bars({ symbol: toYahoo(code), assetClass: 'equity', interval: '1d', count })
-      .then(res => {
-        if (!alive) return
-        const data = res.results
-        setState({ data, loading: false, error: data && data.length ? null : 'no data' })
-      })
-      .catch(err => { if (alive) setState({ data: null, loading: false, error: err instanceof Error ? err.message : 'failed' }) })
-    return () => { alive = false }
-  }, [code, count])
-
-  return state
-}

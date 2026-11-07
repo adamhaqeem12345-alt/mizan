@@ -8,13 +8,13 @@ export function EmptyEditor() {
   return (
     <div className="flex flex-col items-center justify-center h-full select-none px-6 gap-5 text-center">
       <img
-        src="/alice.ico"
-        alt="OpenAlice"
+        src="/mizan.svg"
+        alt="Mizan"
         className="w-16 h-16 rounded-2xl ring-1 ring-primary/25 shadow-[0_0_18px_var(--primary-muted)]"
         draggable={false}
       />
       <div className="space-y-2 max-w-md">
-        <h2 className="text-base font-semibold text-foreground">OpenAlice</h2>
+        <h2 className="text-base font-semibold text-foreground">Mizan</h2>
         <p className="text-[13px] text-muted-foreground leading-relaxed">
           Click an icon on the activity bar to open its sidebar, then pick something from the sidebar to open it as a tab.
         </p>

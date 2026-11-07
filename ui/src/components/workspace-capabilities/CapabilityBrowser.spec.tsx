@@ -98,7 +98,7 @@ it('collapses command groups without losing the reader and reveals search matche
 
 it('separates ownership groups while keeping source/mirror identity independent', () => {
   render(<CapabilityBrowser wsId="one" view="skills" resolvePath={(p) => p} />)
-  expect(screen.getByRole('heading', { name: 'Alice Harness injected 1' })).toBeTruthy()
+  expect(screen.getByRole('heading', { name: 'Mizan Harness injected 1' })).toBeTruthy()
   expect(screen.getByRole('heading', { name: 'Workspace supplied 1' })).toBeTruthy()
   fireEvent.click(screen.getByRole('button', { name: /beta/ }))
   expect(screen.getByText(/Supplied by the Workspace template or added locally/)).toBeTruthy()

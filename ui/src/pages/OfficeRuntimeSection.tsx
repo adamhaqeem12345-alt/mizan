@@ -252,7 +252,7 @@ function eventIdentity(
     return {
       primary: 'Inbox',
       secondary: [event.payload.agent, event.payload.workspaceLabel ?? event.payload.workspaceId]
-        .filter(Boolean).join(' · ') || 'OpenAlice',
+        .filter(Boolean).join(' · ') || 'Mizan',
     }
   }
   if (event.type === 'news.ingested') {
@@ -265,7 +265,7 @@ function eventIdentity(
   return {
     primary: actor?.label ?? officeActivityFallbackLabel(event.payload.resumeId, event.payload.agent),
     secondary: actor?.secondary
-      ?? ([event.payload.agent, event.payload.workspaceId].filter(Boolean).join(' · ') || 'OpenAlice'),
+      ?? ([event.payload.agent, event.payload.workspaceId].filter(Boolean).join(' · ') || 'Mizan'),
   }
 }
 

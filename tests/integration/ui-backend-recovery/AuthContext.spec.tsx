@@ -73,7 +73,7 @@ describe('AuthProvider backend recovery', () => {
     )
 
     expect(screen.getByRole('alertdialog', {
-      name: 'OpenAlice lost its backend connection',
+      name: 'Mizan lost its backend connection',
     })).toBeTruthy()
     expect(screen.getByRole('button', { name: 'Retry now' })).toBeTruthy()
   })
@@ -106,7 +106,7 @@ describe('AuthProvider backend recovery', () => {
     expect(screen.queryByRole('status')).toBeNull()
   })
 
-  it('keeps an authenticated app mounted while Alice restarts, then recovers', async () => {
+  it('keeps an authenticated app mounted while Mizan restarts, then recovers', async () => {
     vi.useFakeTimers()
     mocks.getStatus
       .mockResolvedValueOnce({ authed: true, tokenConfigured: true })

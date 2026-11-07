@@ -751,7 +751,7 @@ describe('OfficePage localization', () => {
 
     render(<OfficePage />)
 
-    expect(screen.getByRole('img', { name: 'Office 地图上的 Alice' })).toBeTruthy()
+    expect(screen.getByRole('img', { name: 'Office 地图上的 Mizan' })).toBeTruthy()
     expect(screen.getByRole('alert').textContent).toContain('楼层信号中断')
     expect(screen.getByRole('alert').textContent).toContain('socket interrupted')
   })
@@ -769,15 +769,15 @@ describe('OfficePage localization', () => {
 
     render(<OfficePage />)
 
-    expect(screen.getByLabelText('Office 地图。拖动查看地图，使用方向键或 WASD 移动 Alice，靠近对象后按回车或空格互动。')).toBeTruthy()
-    expect(screen.getByRole('img', { name: 'Office 地图上的 Alice' })).toBeTruthy()
+    expect(screen.getByLabelText('Office 地图。拖动查看地图，使用方向键或 WASD 移动 Mizan，靠近对象后按回车或空格互动。')).toBeTruthy()
+    expect(screen.getByRole('img', { name: 'Office 地图上的 Mizan' })).toBeTruthy()
     expect(screen.getByText('还没有 Workspace')).toBeTruthy()
     expect(screen.queryByRole('button', { name: '所有小组' })).toBeNull()
   })
 
-  it('restores Alice after the Office view unmounts for an excursion', async () => {
+  it('restores Mizan after the Office view unmounts for an excursion', async () => {
     const firstVisit = render(<OfficePage />)
-    const firstAlice = screen.getByRole('img', { name: 'Office 地图上的 Alice' })
+    const firstAlice = screen.getByRole('img', { name: 'Office 地图上的 Mizan' })
     const spawnTop = firstAlice.style.top
 
     fireEvent.keyDown(document.body, { key: 's' })
@@ -786,7 +786,7 @@ describe('OfficePage localization', () => {
     firstVisit.unmount()
 
     render(<OfficePage />)
-    const returnedAlice = screen.getByRole('img', { name: 'Office 地图上的 Alice' })
+    const returnedAlice = screen.getByRole('img', { name: 'Office 地图上的 Mizan' })
     expect(returnedAlice.style.top).toBe(rememberedTop)
     expect(returnedAlice.dataset.direction).toBe('down')
   })
