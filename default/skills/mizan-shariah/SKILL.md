@@ -13,8 +13,10 @@ description: >
 
 - The source of truth is the list of Shariah-compliant securities published by
   the Shariah Advisory Council (SAC) of the Securities Commission Malaysia. It
-  is updated on the last Friday of May and November. The current file is
-  `mizan/data/sc-shariah-list-<date>.json` in the Mizan repository.
+  is updated on the last Friday of May and November. A copy ships with this
+  skill as `sc-shariah-list.json` (same folder as this file): `effectiveDate`,
+  `symbols` (stock codes) and `securities` (code, name, market). Read it with
+  your file tools; do not search the rest of the computer for it.
 - Bursa stocks are identified by their stock code (e.g. `5347` for Tenaga
   Nasional). Market data uses the Yahoo symbol `<code>.KL`; the paper account
   uses the bare code (`alice-uta` contract search accepts `5347` or `5347.KL`).

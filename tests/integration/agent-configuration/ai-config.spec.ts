@@ -50,7 +50,7 @@ describe('claudeAdapter AI-config', () => {
   // Project-scoped `.mcp.json` servers park at "Pending approval" until the
   // user approves — and each workspace dir is a fresh project key, so every
   // spawn carries the auto-trust setting (see AUTOTRUST_SETTINGS in claude.ts).
-  const SETTINGS_FLAG = ['--settings', '{"enableAllProjectMcpServers":true,"sandbox":{"enabled":false}}', '--dangerously-skip-permissions'];
+  const SETTINGS_FLAG = ['--settings', '{"enableAllProjectMcpServers":true,"sandbox":{"enabled":false}}', '--permission-mode', 'acceptEdits', '--allowedTools', 'Read', 'Grep', 'Glob', 'WebSearch', 'WebFetch', 'Bash(alice:*)', 'Bash(alice-uta:*)', 'Bash(traderhub:*)', 'Bash(git:*)'];
 
   it('composeCommand: fresh spawn injects the MCP auto-trust settings', () => {
     expect(claudeAdapter.composeCommand(['claude'], { cwd: dir, env: {} })).toEqual([
@@ -705,7 +705,7 @@ describe('composeHeadlessCommand (one-shot headless argv, prompt placed per-CLI)
       'claude',
       '--settings',
       '{"enableAllProjectMcpServers":true,"sandbox":{"enabled":false}}',
-      '--dangerously-skip-permissions',
+      '--permission-mode', 'acceptEdits', '--allowedTools', 'Read', 'Grep', 'Glob', 'WebSearch', 'WebFetch', 'Bash(alice:*)', 'Bash(alice-uta:*)', 'Bash(traderhub:*)', 'Bash(git:*)',
       '-p',
       '--output-format',
       'stream-json',

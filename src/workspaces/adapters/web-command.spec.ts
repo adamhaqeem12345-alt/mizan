@@ -71,14 +71,16 @@ describe('Web surface command composition', () => {
   it('composes Claude bidirectional stream-json with stdio permission prompts', () => {
     const resumed = claudeAdapter.composeWebCommand!(['claude'], ctx({ resume: { sessionId: 'c-1' } }))
     expect(resumed).toEqual([
-      'claude', '--settings', '{"enableAllProjectMcpServers":true,"sandbox":{"enabled":false}}', '--dangerously-skip-permissions', '--resume', 'c-1',
+      'claude', '--settings', '{"enableAllProjectMcpServers":true,"sandbox":{"enabled":false}}', '--permission-mode', 'acceptEdits', '--allowedTools', 'Read', 'Grep', 'Glob', 'WebSearch', 'WebFetch', 'Bash(alice:*)', 'Bash(alice-uta:*)', 'Bash(traderhub:*)', 'Bash(git:*)', '--resume', 'c-1',
       '-p', '--input-format', 'stream-json', '--output-format', 'stream-json', '--verbose',
       '--include-partial-messages', '--permission-prompt-tool', 'stdio',
     ])
     const fresh = claudeAdapter.composeWebCommand!(['claude'], ctx())
     expect(fresh).toContain('--session-id')
     expect(fresh[fresh.indexOf('--session-id') + 1]).toMatch(/^[0-9a-f-]{36}$/)
-    expect(fresh).not.toContain('--allowedTools')
+    // Mizan: no bypass; only the OpenAlice CLIs and read tools are pre-approved.
+    expect(fresh).not.toContain('--dangerously-skip-permissions')
+    expect(fresh.slice(fresh.indexOf('--permission-mode'), fresh.indexOf('--permission-mode') + 2)).toEqual(['--permission-mode', 'acceptEdits'])
   })
 
   it('composes Codex app-server over stdio with MCP registration but no TUI permission flags', () => {

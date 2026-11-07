@@ -79,6 +79,19 @@ function claudeProjectEffort(value: unknown): ModelReasoningEffort | null {
  */
 const AUTOTRUST_SETTINGS = '{"enableAllProjectMcpServers":true,"sandbox":{"enabled":false}}';
 
+/**
+ * Mizan: never run Claude Code in bypass-permissions mode on the user's own
+ * machine. File edits inside the Workspace and the OpenAlice CLIs are
+ * pre-approved; every other tool asks (in the TUI, or as a browser prompt on
+ * the Web surface) and is denied in headless runs.
+ */
+const MIZAN_PERMISSION_ARGS = [
+  '--permission-mode', 'acceptEdits',
+  '--allowedTools',
+  'Read', 'Grep', 'Glob', 'WebSearch', 'WebFetch',
+  'Bash(alice:*)', 'Bash(alice-uta:*)', 'Bash(traderhub:*)', 'Bash(git:*)',
+] as const;
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
@@ -233,7 +246,7 @@ export const claudeAdapter: CliAdapter = {
   readInteractiveSetupStatus: readClaudeInteractiveSetupStatus,
 
   composeCommand(base: readonly string[], ctx: SpawnContext): readonly string[] {
-    const cmd = [...base, '--settings', AUTOTRUST_SETTINGS, '--dangerously-skip-permissions', ...(ctx.sessionRuntime?.interactiveArgs ?? [])];
+    const cmd = [...base, '--settings', AUTOTRUST_SETTINGS, ...MIZAN_PERMISSION_ARGS, ...(ctx.sessionRuntime?.interactiveArgs ?? [])];
     if (ctx.resume === undefined) {
       // Quick-chat seed: `claude [flags] -- <prompt>` opens the interactive TUI
       // and auto-submits the prompt. The `--` end-of-options terminator (same as
@@ -271,7 +284,7 @@ export const claudeAdapter: CliAdapter = {
     }
     return [
       ...base,
-      '--settings', AUTOTRUST_SETTINGS, '--dangerously-skip-permissions',
+      '--settings', AUTOTRUST_SETTINGS, ...MIZAN_PERMISSION_ARGS,
       ...(ctx.sessionRuntime?.headlessArgs ?? []),
       ...(ctx.resume ? ['--resume', ctx.resume.sessionId] : []),
       '-p', '--output-format', 'stream-json', '--verbose',
@@ -291,7 +304,7 @@ export const claudeAdapter: CliAdapter = {
     if (ctx.resume === 'last') throw new Error('the Web surface requires a concrete Claude session id or a fresh Session');
     return [
       ...base,
-      '--settings', AUTOTRUST_SETTINGS, '--dangerously-skip-permissions',
+      '--settings', AUTOTRUST_SETTINGS, ...MIZAN_PERMISSION_ARGS,
       ...(ctx.sessionRuntime?.webArgs ?? ctx.sessionRuntime?.interactiveArgs ?? []),
       ...(ctx.appendSystemPrompt ? ['--append-system-prompt', ctx.appendSystemPrompt] : []),
       ...(ctx.resume ? ['--resume', ctx.resume.sessionId] : ['--session-id', randomUUID()]),
