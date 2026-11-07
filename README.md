@@ -1,185 +1,184 @@
 <p align="center">
-  <img src="docs/images/alice-full.png" alt="OpenAlice" width="88">
+  <img src="ui/public/mizan.svg" alt="Mizan" width="72">
 </p>
 
-<h1 align="center">OpenAlice</h1>
+<h1 align="center">Mizan</h1>
 
 <p align="center">
-  <strong>The AI orchestrator for trading.</strong><br>
-  Your one-person Wall Street — bring your AI agents, market tools, research, and trading accounts into one local workspace.
-</p>
-
-<p align="center">
-  <a href="https://openalice.ai"><img src="https://img.shields.io/badge/Website-blue" alt="Website"></a> · <a href="https://openalice.ai/docs"><img src="https://img.shields.io/badge/Docs-green" alt="Docs"></a> · <a href="https://x.com/OpenAliceAI"><img src="https://img.shields.io/badge/X-000000?logo=x&logoColor=white" alt="X (Twitter)"></a> · <a href="https://discord.gg/zf4STmrQd8"><img src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white" alt="Discord"></a> · <a href="https://qm.qq.com/q/iSg6O4FmrC"><img src="https://img.shields.io/badge/QQ-12B7F5" alt="QQ"></a>
+  <strong>Shariah-compliant trading on Bursa Malaysia, with the rules enforced in code.</strong><br>
+  Charts, forecast ranges, paper trading and an AI trading-desk agent that explains but never advises.
 </p>
 
 <p align="center">
-  <a href="https://openalice.ai/docs/getting-started/installation">Install OpenAlice</a> · <a href="#features">Features</a> · <a href="https://openalice.ai/docs/getting-started/quick-start">Quick Start</a>
+  <a href="https://mizan.cuddleia.com">Try it live</a> · <a href="#run-the-desktop-version">Run the desktop version</a> · <a href="#how-the-rules-are-enforced">How the rules work</a>
 </p>
 
 <p align="center">
-  <img src="docs/images/ask-alice.jpg" alt="Ask Alice: choose a Workspace and agent, then start a market research task" width="960">
+  <img src="docs/images/mizan-dashboard.jpg" alt="Mizan dashboard: watchlist of Shariah-compliant Bursa stocks, a candlestick chart of Tenaga Nasional and its 20-day forecast range" width="960">
 </p>
 
-Research a company, test an idea, keep a thesis under review, or prepare a trade.
-OpenAlice connects the agents you already use to market data, dedicated research
-workspaces, scheduled tasks, and trading accounts. Work with one agent or several;
-your files, research history, and follow-ups stay in place between sessions.
+*Mizan* (ميزان) means "balance" or "scale". Most trading tools let you trade
+anything and leave the Shariah check to you. Mizan works the other way: it only
+knows the shares on the Securities Commission Malaysia's Shariah list, and the
+things Islamic finance rules out (forex, gold contracts, crypto, derivatives,
+margin, short selling and betting-style prediction markets) are refused before
+an order can go through.
 
-## Get Started
+> **Not investment advice.** Mizan is a demo and learning tool for paper
+> trading. It never tells you to buy, sell or hold a stock. Check Shariah status
+> with the latest SC list and a qualified adviser.
 
-[Download the desktop app](https://github.com/TraderAlice/OpenAlice/releases/latest)
-for macOS or Windows. The desktop app includes Pi; connect a model credential or
-supported login to start researching. **You do not need a broker account.**
+## What you can do
 
-Prefer a terminal or server? See the [CLI installer](docs/cli-installer.md),
-or [remote quickstart](docs/remote-quickstart.md).
-For platform details, see the [installation guide](https://openalice.ai/docs/getting-started/installation).
+- **Watch Shariah-compliant stocks.** The search only finds stocks on the
+  [SC Shariah Advisory Council list](https://www.sc.com.my/development/icm/shariah-compliant-securities/list-of-shariah-compliant-securities)
+  (886 stocks plus 1 Islamic business trust in the May 2026 list). Type
+  "Maybank" and it tells you it is not on the list.
+- **Read the chart with a forecast range.** Daily candlesticks, the 50-day
+  average and a 20-day range that the price should stay inside 80% of the
+  time. Mizan also shows how often that range actually held over the past year,
+  so you can judge it yourself.
+- **Practise with paper money.** Start with RM 100,000 and buy or sell in
+  board lots of 100 shares at the last close. Nothing real is traded.
+- **Keep a trade journal.** Every order is logged with your own reason for it,
+  including the orders the rules refused. Export it as CSV.
+- **Ask the AI desk** (desktop version). The agent looks up Shariah status,
+  explains price history and forecasts, and checks a trade you propose against
+  your own plan. It replies in Bahasa Malaysia or English. It stages trades for
+  you to approve; it never places one by itself.
 
-Try a first task in Ask Alice:
+<p align="center">
+  <img src="docs/images/mizan-paper-desk.jpg" alt="Paper trading desk with an order ticket, holdings, trade journal and buttons to test the rules" width="960">
+</p>
 
-> Build a thesis on NVDA. Compare fundamentals with sector trends and price
-> behavior, save the research in this Workspace, and explain what would prove
-> the thesis wrong.
+## How the rules are enforced
 
-Continue with a follow-up, turn it into a recurring Issue, or take the idea into
-AutoQuant for quantitative research. [Walk through your first research workflow →](https://openalice.ai/docs/getting-started/quick-start)
+Every order passes these checks before it can fill. Approving a trade does not
+skip them.
 
-## Features
+| Rule | What it refuses |
+|---|---|
+| `shariah-sc-list` | Anything that is not an ordinary share, and buys of stocks not on the SC list. Selling is always allowed, so a stock that drops off the list can be disposed of. |
+| `cash-only` | Buys that cost more than the cash on hand, or that cannot be priced. No margin. |
+| `no-short` | Selling more shares than you hold. |
+| board lot (web version) | Quantities that are not multiples of 100 shares. |
 
-### Put your agents to work with market tools
+The AI agent works under the same limits. Its instructions and the
+`mizan-shariah` skill tell it to use the SC list rather than judge compliance
+itself, to quote forecasts as ranges with their hit rate, and to decline
+buy/sell/hold calls. Under the SC's *Guidance Note on Provision of Investment
+Advice*, a disclaimer does not make a recommendation acceptable.
 
-Use Claude Code, Codex, OpenCode, Pi, Oh My Pi, and other supported native agents
-with Alice's market data, fundamentals, news, and quantitative tools. Inspect the
-same markets yourself in the UI, then ask an agent to investigate further.
-Available data depends on your configured providers.
+In the desktop version the agent may stage a trade, but you approve every push
+("Allow AI to push trades" stays off). Claude Code runs in accept-edits mode
+with only the Mizan command-line tools and read-only tools pre-approved;
+anything else asks you first.
 
-### Give each line of research a place to grow
+## Two versions
 
-Keep conversations, files, and Git history together in reusable Workspaces.
-Use Chat for general research, AutoQuant for quantitative projects and experiments,
-and Auto Prediction for prediction-market research. The specialist workspaces
-have their own Studio interfaces and can be developed by the agent working inside them.
+| | Web ([mizan.cuddleia.com](https://mizan.cuddleia.com)) | Desktop (this repo, run locally) |
+|---|---|---|
+| Dashboard, charts, forecast ranges | ✓ | ✓ |
+| Paper trading | In your browser | Simulator account with full order history |
+| Trade journal | ✓ (CSV export) | ✓ (Trading as Git: every trade is a commit) |
+| AI trading-desk agent | — | ✓ (uses your own Claude Code or other agent CLI) |
+| Install | None | Node 22 + pnpm |
 
-### Keep following the ideas that matter
+The AI is desktop-only on purpose: it runs on your own agent subscription, on
+your own computer.
 
-Link research to assets and topics in Tracked. Turn follow-up work into Issues
-with instructions and a schedule: a morning scan, a weekly macro review, or a
-recurring check on a thesis. Scheduled runs use the Workspace's agent and context.
+## Run the desktop version
 
-### Get results you can follow up on
-
-Inbox brings together reports, questions, and updates from your Workspaces.
-Open the research file or reply to the Session that produced it. Use Workspace
-Manager to inspect who owns what, review scheduled work, and coordinate across
-Workspaces when you need a wider view.
-
-<table>
-  <tr>
-    <td><img src="docs/images/issue-board.jpg" alt="Issues with scheduled research, run status, and work awaiting human review"></td>
-    <td><img src="docs/images/tracked.jpg" alt="Tracked graph connecting assets, research topics, notes, and Issues"></td>
-  </tr>
-  <tr>
-    <td align="center"><strong>Keep research moving</strong><br>Issues, schedules, and work that needs attention.</td>
-    <td align="center"><strong>Connect your research</strong><br>Assets, topics, and the work behind your ideas.</td>
-  </tr>
-  <tr>
-    <td><img src="docs/images/inbox.jpg" alt="Inbox report with a research attachment and a reply to the originating Session"></td>
-    <td><img src="docs/images/market.jpg" alt="Market view with price history, company profile, and fundamental metrics"></td>
-  </tr>
-  <tr>
-    <td align="center"><strong>Read, then follow up</strong><br>Reports and a direct path back to their author.</td>
-    <td align="center"><strong>Explore the market</strong><br>Prices, fundamentals, and context for your next question.</td>
-  </tr>
-</table>
-
-### Bring research to a trading decision
-
-Connect supported brokers through Unified Trading Account to inspect holdings,
-orders, and account state. With AI trading enabled, agents can stage proposed
-operations and commit their rationale. You review and approve execution through
-Trading as Git.
-
-> [!CAUTION]
-> **Trading execution is beta.** Start with simulator, paper, demo, or testnet
-> accounts. OpenAlice is experimental software; interfaces may change, and it
-> provides no guarantees of correctness, reliability, profitability, or loss prevention.
-> Use real funds only if you understand and accept the risks.
-
-[Unified Trading Account](https://openalice.ai/docs/core-concepts/unified-trading-account) · [Trading as Git](https://openalice.ai/docs/core-concepts/trading-as-git)
-
-## Local and Yours
-
-OpenAlice runs on your machine by default. Workspaces are directories and Git
-repositories you can inspect, edit, and back up. Alice stores its own state under
-`~/.openalice` and seals broker credentials at rest. Your chosen agents and data
-providers still use their configured services.
-
-Native agents keep their own model loops and tool behavior. Workspace files,
-skills, and dedicated research projects give them the context to do trading work.
-
-[Data, credentials, and backups →](https://openalice.ai/docs/deployment/data-and-credentials)
-
-## Documentation and Help
-
-- [Documentation](https://openalice.ai/docs) — setup, research workflows, agents, and trading.
-- [Discord](https://discord.gg/zf4STmrQd8) · [QQ group](https://qm.qq.com/q/iSg6O4FmrC) — questions and community.
-- [GitHub Issues](https://github.com/TraderAlice/OpenAlice/issues) — report a bug or propose an improvement.
-- [DeepWiki](https://deepwiki.com/TraderAlice/OpenAlice) — explore the codebase.
-
-## Development
+Requirements: Node.js 22.19+, pnpm 11.7 (`npm i -g pnpm@11.7.0`), and an agent
+CLI such as [Claude Code](https://claude.com/claude-code) signed in with your
+own account.
 
 ```bash
-git clone https://github.com/TraderAlice/OpenAlice.git
-cd OpenAlice
+git clone https://github.com/adamhaqeem12345-alt/mizan.git
+cd mizan
 pnpm install
-pnpm dev
+pnpm exec turbo run build --filter='!@traderalice/desktop' --filter='!./packages/uta-broker-*'
+OPENALICE_HOME=~/.openalice-mizan pnpm dev       # UI at http://localhost:47331
 ```
 
-Open the UI URL printed by the terminal. Source installs need at least one host
-agent CLI and its model credentials or login.
-See [Source & Dev](https://openalice.ai/docs/getting-started/developer-setup) for
-setup and [CONTRIBUTING.md](CONTRIBUTING.md) before opening a PR.
+Then, in the app:
 
-## Star History
+1. **Settings → Trading:** set the mode to **Pro** and keep "Allow AI to push
+   trades" off.
+2. **Settings → Developer → Simulator:** create a paper account and add the
+   guards `shariah-sc-list`, `no-short` and `cash-only`.
+3. Load the latest Bursa closing prices into the simulator. The simulator lives
+   in memory, so repeat this after every restart:
 
-<p align="center">
-  <a href="https://github.com/TraderAlice/OpenAlice">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="docs/images/star-history-dark.svg">
-      <img src="docs/images/star-history.svg" alt="OpenAlice GitHub star history" width="900">
-    </picture>
-  </a>
-</p>
+   ```bash
+   node mizan/scripts/sync-sim-prices.mjs
+   ```
 
-<p align="center">
-  <a href="https://github.com/TraderAlice/OpenAlice"><img src="https://img.shields.io/github/stars/TraderAlice/OpenAlice?style=flat-square&logo=github&label=Current%20stars" alt="Current GitHub stars"></a>
-</p>
+## Run the web version
 
-## Contributors
+```bash
+pnpm install --filter 'open-alice-ui...'
+pnpm --filter open-alice-ui run dev:web     # http://127.0.0.1:5180/web.html
+pnpm --filter open-alice-ui run build:web   # static build in ui/dist-web
+```
 
-OpenAlice is sharper for the people who dig into it with us: the bugs they
-catch, the ideas they push, the UX edges they notice, the designs and reviews
-they bring. High-signal issues and PR proposals count here. If a report,
-suggestion, or implementation proposal changes the product, it gets credited.
+It deploys to Vercel with `vercel.json`: the static app plus one function,
+`api/bars.js`, which serves daily prices for Bursa codes (`5347.KL`) only.
 
-<!-- Standouts first. Avatars come free from https://github.com/<handle>.png -->
-<p>
-  <a href="https://github.com/bakabird"><img src="https://github.com/bakabird.png" width="56" height="56" alt="@bakabird" /></a>
-  <a href="https://github.com/2233admin"><img src="https://github.com/2233admin.png" width="56" height="56" alt="@2233admin" /></a>
-  <a href="https://github.com/lvysssss"><img src="https://github.com/lvysssss.png" width="56" height="56" alt="@lvysssss" /></a>
-  <a href="https://github.com/walkonbothsides"><img src="https://github.com/walkonbothsides.png" width="56" height="56" alt="@walkonbothsides" /></a>
-  <a href="https://github.com/bakabaka0613"><img src="https://github.com/bakabaka0613.png" width="56" height="56" alt="@bakabaka0613" /></a>
-  <a href="https://github.com/JasonWang1124"><img src="https://github.com/JasonWang1124.png" width="56" height="56" alt="@JasonWang1124" /></a>
-  <a href="https://github.com/rudyll"><img src="https://github.com/rudyll.png" width="56" height="56" alt="@rudyll" /></a>
-  <a href="https://github.com/jalilsedna"><img src="https://github.com/jalilsedna.png" width="56" height="56" alt="@jalilsedna" /></a>
-  <a href="https://github.com/dbydd"><img src="https://github.com/dbydd.png" width="56" height="56" alt="@dbydd" /></a>
-  <a href="https://github.com/enderzcx"><img src="https://github.com/enderzcx.png" width="56" height="56" alt="@enderzcx" /></a>
-  <a href="https://github.com/eutialia"><img src="https://github.com/eutialia.png" width="56" height="56" alt="@eutialia" /></a>
-</p>
+## Data sources
 
-**See the full list and what each person shaped**: [CONTRIBUTORS.md](./CONTRIBUTORS.md)
+- **Shariah status:** the SC Shariah Advisory Council list, published on the
+  last Friday of May and November. The current file is
+  `mizan/data/sc-shariah-list-2026-05-29.json`; the next list is due
+  **27 November 2026**.
+- **Prices:** Yahoo Finance daily closes. They are delayed and unofficial, so
+  they are fine for practice but not for real trading decisions.
+- **Forecast:** a log-normal random walk fitted on one year of daily returns
+  (`ui/src/mizan/forecast.ts`). It describes how much a price has moved, not
+  which way it will go. Weekends are skipped; Malaysian public holidays are not
+  yet.
+
+### Updating the SC list
+
+```bash
+pdftotext -raw "List of Shariah-compliant securities <Month Year>.pdf" list.txt
+node mizan/scripts/import-sc-list.mjs list.txt <YYYY-MM-DD> > mizan/data/sc-shariah-list-<YYYY-MM-DD>.json
+```
+
+Check that `counts.stocks` matches the total in the SC's Table 3. Then copy the
+file to `default/skills/mizan-shariah/sc-shariah-list.json` (the agent's copy),
+point the `shariah-sc-list` guard's `listFile` at it, and update the import in
+`ui/src/mizan/scList.ts`.
+
+## Where things live
+
+| Path | What |
+|---|---|
+| `services/uta/src/domain/trading/guards/` | `shariah-sc-list`, `no-short`, `cash-only` guards |
+| `tests/integration/uta-simulation/mizan-guards.spec.ts` | Guard tests, including the real SC list |
+| `ui/src/pages/MizanHomePage.tsx` | Dashboard: watchlist, chart, forecast and stats |
+| `ui/src/mizan/` | Forecast maths, SC list lookup, web paper account (`paper.ts`) |
+| `ui/src/mizan/web/` | Web version shell and paper trading desk |
+| `api/bars.js` | Vercel price function (Bursa codes only) |
+| `mizan/data/`, `mizan/scripts/` | SC list data, list importer, simulator price sync |
+| `default/skills/mizan-shariah/` | The agent's Shariah skill and its copy of the list |
+| `src/workspaces/templates/chat/files/instruction.md` | The agent's standing rules |
+
+## Built on OpenAlice
+
+Mizan is a fork of [OpenAlice](https://github.com/TraderAlice/OpenAlice) by
+TraderAlice. OpenAlice supplies the workspace, agent harness, "Trading as Git"
+flow, broker simulator and guard pipeline. Mizan adds the Shariah and Malaysian
+rules, the Bursa dashboard and the web version, and removes what does not fit
+(forex, crypto and prediction-market features are hidden or refused).
+OpenAlice's own README, with its full feature tour, is kept at
+[docs/openalice-readme.md](docs/openalice-readme.md).
 
 ## License
 
-[AGPL-3.0](LICENSE)
+[AGPL-3.0](LICENSE), as upstream. If you run a modified Mizan as a public
+service, you must offer its source code to its users; the web version links
+here for that reason. Third-party notices are in
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+A [Cuddleia](https://cuddleia.com) project.

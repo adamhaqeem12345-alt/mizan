@@ -1,81 +1,12 @@
-# Mizan
+# mizan/
 
-Mizan is a fork of [OpenAlice](https://github.com/TraderAlice/OpenAlice) for
-Shariah-compliant trading on Bursa Malaysia. It keeps OpenAlice's "Trading as
-Git" flow (the AI stages and commits a trade, a person approves the push) and
-adds guards that enforce the rules in code.
+Data and scripts for Mizan's Shariah rules:
 
-## Rules
+- `data/sc-shariah-list-<date>.json`: the SC Shariah Advisory Council list,
+  imported from the official PDF.
+- `scripts/import-sc-list.mjs`: turns `pdftotext -raw` output into that JSON.
+- `scripts/sync-sim-prices.mjs`: loads the latest Bursa closes into the
+  desktop simulator account.
 
-- Ordinary shares only. Forex, gold (XAUUSD), crypto, futures, options,
-  warrants and CFDs are rejected.
-- Buys must be on the Securities Commission Malaysia Shariah Advisory Council
-  list. Stocks that drop off the list can still be sold.
-- No short selling: never sell more shares than are held.
-- Cash only: no margin.
-- Paper trading on the built-in simulator. The AI explains and checks the
-  user's own rules; it does not recommend what to buy or sell.
-
-## Guards
-
-Add these to an account under Settings → Trading → Guards:
-
-| Guard | Options |
-|---|---|
-| `shariah-sc-list` | `listFile` (default `mizan/data/sc-shariah-list-2026-05-29.json`) or `symbols` |
-| `no-short` | none |
-| `cash-only` | none |
-
-Source: `services/uta/src/domain/trading/guards/`. Tests:
-`tests/integration/uta-simulation/mizan-guards.spec.ts`.
-
-## Updating the SC list
-
-The SC publishes the list on the last Friday of May and November.
-
-```bash
-pdftotext -raw "List of Shariah-compliant securities <Month Year>.pdf" list.txt
-node mizan/scripts/import-sc-list.mjs list.txt <YYYY-MM-DD> > mizan/data/sc-shariah-list-<YYYY-MM-DD>.json
-```
-
-Then copy the new file to `default/skills/mizan-shariah/sc-shariah-list.json`
-(the agent's copy) and point the `shariah-sc-list` guard's `listFile` at it.
-The importer checks for duplicate codes; compare its `counts.stocks` with the
-total in the SC's Table 3 before using a new file. The May 2026 list has 886
-stocks plus 1 Islamic business trust.
-
-## Running locally
-
-```bash
-OPENALICE_HOME=~/.openalice-mizan pnpm dev       # UI at http://localhost:47331
-node mizan/scripts/sync-sim-prices.mjs           # load latest Bursa closes into the simulator
-```
-
-The simulator account lives in memory, so run the price sync after every
-restart. Claude Code runs in accept-edits mode with only the OpenAlice CLIs and
-read tools pre-approved; anything else asks first (upstream uses
-bypass-permissions).
-
-## Licence
-
-AGPL-3.0, as upstream. This is a demo and research tool, not investment advice.
-
-## Web version (mizan.cuddleia.com)
-
-A browser-only build of the dashboard with a paper account and trade journal,
-deployed on Vercel from this branch (`vercel.json`).
-
-```bash
-pnpm --filter open-alice-ui run dev:web     # http://127.0.0.1:5180/web.html
-pnpm --filter open-alice-ui run build:web   # ui/dist-web
-```
-
-- `ui/web.html` → `ui/src/mizan/web/` (app shell, `PaperDesk`).
-- `ui/src/mizan/paper.ts`: the paper account. Orders fill at the last daily
-  close and pass the same rules as the UTA guards (SC list, cash only, no short
-  selling) plus Bursa's 100-share board lot. Refused orders stay in the journal.
-- `api/bars.js`: a Vercel function serving Yahoo daily bars for Bursa codes
-  (`<code>.KL`) only, cached for an hour.
-
-The web version has no AI agent: the agent runs on the user's own computer
-through the desktop version.
+See the [main README](../README.md) for how Mizan works, how to run it and how
+to update the SC list.
