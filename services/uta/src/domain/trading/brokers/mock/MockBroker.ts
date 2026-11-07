@@ -261,16 +261,25 @@ export class MockBroker implements IBroker {
   async searchContracts(_pattern: string): Promise<ContractDescription[]> {
     this._record('searchContracts', [_pattern])
     const desc = new ContractDescription()
-    desc.contract = makeContract()
+    desc.contract = this._bursaContract(_pattern) ?? makeContract()
     return [desc]
   }
 
   async getContractDetails(_query: Contract): Promise<ContractDetails | null> {
     this._record('getContractDetails', [_query])
     const details = new ContractDetails()
-    details.contract = makeContract()
-    details.longName = 'Mock Contract'
+    const bursa = this._bursaContract(_query.symbol)
+    details.contract = bursa ?? makeContract()
+    details.longName = bursa ? `Bursa Malaysia ${bursa.symbol}` : 'Mock Contract'
     return details
+  }
+
+  /** Mizan: a Bursa Malaysia stock code ("5347" or "5347.KL") becomes a MYR share contract on this account. */
+  private _bursaContract(pattern: string | undefined): Contract | null {
+    const m = /^(\d{4,5}[A-Z]{0,2})(\.KL)?$/i.exec((pattern ?? '').trim())
+    if (!m) return null
+    const code = m[1].toUpperCase()
+    return makeContract({ aliceId: `${this.id}|${code}`, symbol: code, secType: 'STK', exchange: 'BURSA', currency: 'MYR' })
   }
 
   // ---- Trading operations ----
