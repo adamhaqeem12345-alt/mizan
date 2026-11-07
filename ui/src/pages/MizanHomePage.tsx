@@ -370,12 +370,14 @@ function PriceChart({ bars, forecast, sma50 }: { bars: HistoricalBar[]; forecast
       line('low', LineStyle.Dashed)
     }
 
-    // Show the last year plus the forecast window, once autoSize has measured the container.
-    const frame = requestAnimationFrame(() => {
-      chart.timeScale().setVisibleLogicalRange({ from: Math.max(0, daily.length - 252), to: daily.length - 1 + (forecast?.points.length ?? 0) })
-    })
+    // Show the last year plus the forecast window. autoSize measures the container
+    // after creation, so apply the range again whenever the width changes.
+    const timeScale = chart.timeScale()
+    const showRange = () => timeScale.setVisibleLogicalRange({ from: Math.max(0, daily.length - 252), to: daily.length - 1 + (forecast?.points.length ?? 0) })
+    showRange()
+    timeScale.subscribeSizeChange(showRange)
 
-    return () => { cancelAnimationFrame(frame); chart.remove(); chartRef.current = null }
+    return () => { timeScale.unsubscribeSizeChange(showRange); chart.remove(); chartRef.current = null }
   }, [bars, forecast, sma50, theme, palette])
 
   return <div ref={containerRef} className="h-[360px] w-full" aria-label="Price chart with forecast range" role="img" />
