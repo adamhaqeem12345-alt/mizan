@@ -22,6 +22,8 @@
     { "source": "/serambi/mcp", "destination": "https://pms.cuddleia.com/api/public/mcp" },
     { "source": "/serambi", "destination": "https://pms.cuddleia.com/api/public/v1" },
     { "source": "/serambi/v1", "destination": "https://pms.cuddleia.com/api/public/v1" },
+    { "source": "/serambi/v1/staff", "destination": "https://pms.cuddleia.com/api/staff/v1" },
+    { "source": "/serambi/v1/staff/:path*", "destination": "https://pms.cuddleia.com/api/staff/v1/:path*" },
     { "source": "/serambi/v1/:path*", "destination": "https://pms.cuddleia.com/api/public/v1/:path*" }
   ],
   "headers": [

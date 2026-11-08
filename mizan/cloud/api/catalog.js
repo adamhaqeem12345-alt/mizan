@@ -12,6 +12,7 @@ export function GET() {
       serambi: {
         description: 'Hotel availability for small Malaysian hotels and homestays: room types, rates, free rooms',
         api: 'https://api.cuddleia.com/serambi/v1',
+        staffApi: 'https://api.cuddleia.com/serambi/v1/staff (API key required)',
         mcp: 'https://mcp.cuddleia.com/serambi',
         app: 'https://pms.cuddleia.com',
       },
