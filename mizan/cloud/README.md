@@ -9,7 +9,8 @@ Read-only services built on the same data and maths as the Mizan dashboard.
 
 Cuddleia keeps one subdomain per kind of service and one path per product:
 `api.cuddleia.com/<product>/v1/...` and `mcp.cuddleia.com/<product>`. The roots
-list the available products. The old `mizan.api.cuddleia.com` and
+list the available products. Serambi (`/serambi/v1`, `/serambi` on mcp) is
+proxied to the Serambi app at `pms.cuddleia.com/api/public/...`. The old `mizan.api.cuddleia.com` and
 `mizan.mcp.cuddleia.com` addresses redirect (308) to the new ones.
 
 ## API
