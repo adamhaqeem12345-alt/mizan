@@ -4,18 +4,23 @@ Read-only services built on the same data and maths as the Mizan dashboard.
 
 | | URL |
 |---|---|
-| API | https://mizan.api.cuddleia.com |
-| MCP | https://mizan.mcp.cuddleia.com/mcp |
+| API | https://api.cuddleia.com/mizan/v1 |
+| MCP | https://mcp.cuddleia.com/mizan |
+
+Cuddleia keeps one subdomain per kind of service and one path per product:
+`api.cuddleia.com/<product>/v1/...` and `mcp.cuddleia.com/<product>`. The roots
+list the available products. The old `mizan.api.cuddleia.com` and
+`mizan.mcp.cuddleia.com` addresses redirect (308) to the new ones.
 
 ## API
 
 | Endpoint | Returns |
 |---|---|
-| `GET /v1/list` | SC Shariah list date, counts, next expected update |
-| `GET /v1/shariah/{code}` | Shariah status of a Bursa code, e.g. `/v1/shariah/5347` |
-| `GET /v1/stocks?q=&limit=` | Search Shariah-compliant stocks by name or code |
-| `GET /v1/prices/{code}?days=` | Daily prices (Yahoo Finance, delayed), up to 1300 days |
-| `GET /v1/forecast/{code}?horizon=` | 80% price range over 5–60 trading days, with its past hit rate |
+| `GET /mizan/v1/list` | SC Shariah list date, counts, next expected update |
+| `GET /mizan/v1/shariah/{code}` | Shariah status of a Bursa code, e.g. `/mizan/v1/shariah/5347` |
+| `GET /mizan/v1/stocks?q=&limit=` | Search Shariah-compliant stocks by name or code |
+| `GET /mizan/v1/prices/{code}?days=` | Daily prices (Yahoo Finance, delayed), up to 1300 days |
+| `GET /mizan/v1/forecast/{code}?horizon=` | 80% price range over 5–60 trading days, with its past hit rate |
 
 Responses are JSON, CORS-open and cached at the edge (list data for a day,
 prices for an hour).
@@ -28,7 +33,7 @@ Stateless Streamable HTTP with JSON responses, no sign-in. Tools:
 model to explain and never give buy, sell or hold advice.
 
 ```bash
-claude mcp add --transport http mizan https://mizan.mcp.cuddleia.com/mcp
+claude mcp add --transport http mizan https://mcp.cuddleia.com/mizan
 ```
 
 ## Development

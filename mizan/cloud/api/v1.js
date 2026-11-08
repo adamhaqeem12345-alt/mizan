@@ -1,16 +1,16 @@
-// Mizan public API (mizan.api.cuddleia.com). Read-only JSON; vercel.json rewrites
-// /v1/<route> to /api/v1?route=<route>.
+// Mizan public API (api.cuddleia.com/mizan/v1). Read-only JSON; vercel.json rewrites
+// /mizan/v1/<route> to /api/v1?route=<route>.
 import { DISCLAIMER, SOURCE, forecast, listInfo, priceHistory, searchStocks, shariahStatus } from '../lib/mizan.js'
 
 const DAY = 'public, s-maxage=86400, stale-while-revalidate=604800'
 const HOUR = 'public, s-maxage=3600, stale-while-revalidate=86400'
 
 export const ENDPOINTS = {
-  'GET /v1/list': 'SC Shariah list info: date, counts, next expected update',
-  'GET /v1/shariah/{code}': 'Shariah status of one Bursa stock code, e.g. /v1/shariah/5347',
-  'GET /v1/stocks?q={text}&limit={n}': 'Search Shariah-compliant stocks by code or name',
-  'GET /v1/prices/{code}?days={n}': 'Daily price history (Yahoo Finance, delayed), up to 1300 days',
-  'GET /v1/forecast/{code}?horizon={days}': '80% price range over 5–60 trading days, with its past hit rate',
+  'GET /mizan/v1/list': 'SC Shariah list info: date, counts, next expected update',
+  'GET /mizan/v1/shariah/{code}': 'Shariah status of one Bursa stock code, e.g. /mizan/v1/shariah/5347',
+  'GET /mizan/v1/stocks?q={text}&limit={n}': 'Search Shariah-compliant stocks by code or name',
+  'GET /mizan/v1/prices/{code}?days={n}': 'Daily price history (Yahoo Finance, delayed), up to 1300 days',
+  'GET /mizan/v1/forecast/{code}?horizon={days}': '80% price range over 5–60 trading days, with its past hit rate',
 }
 
 function json(body, status = 200, cache = DAY) {
@@ -27,7 +27,7 @@ export async function GET(request) {
   try {
     switch (name) {
       case '':
-        return json({ name: 'Mizan API', version: 1, endpoints: ENDPOINTS, mcp: 'https://mizan.mcp.cuddleia.com/mcp', source: SOURCE, disclaimer: DISCLAIMER })
+        return json({ name: 'Mizan API', version: 1, endpoints: ENDPOINTS, mcp: 'https://mcp.cuddleia.com/mizan', source: SOURCE, disclaimer: DISCLAIMER })
       case 'list':
         return json({ ...listInfo(), disclaimer: DISCLAIMER })
       case 'shariah': {
@@ -45,7 +45,7 @@ export async function GET(request) {
         return json({ ...result, disclaimer: DISCLAIMER }, result.error ? 400 : 200, HOUR)
       }
       default:
-        return json({ error: `Unknown endpoint /v1/${route}`, endpoints: ENDPOINTS }, 404)
+        return json({ error: `Unknown endpoint /mizan/v1/${route}`, endpoints: ENDPOINTS }, 404)
     }
   } catch (err) {
     return json({ error: 'Price source unavailable, try again later', detail: err instanceof Error ? err.message : String(err) }, 502)

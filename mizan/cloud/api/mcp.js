@@ -1,4 +1,4 @@
-// Mizan MCP server (mizan.mcp.cuddleia.com/mcp). Stateless Streamable HTTP:
+// Mizan MCP server (mcp.cuddleia.com/mizan). Stateless Streamable HTTP:
 // each request gets a fresh server, so it runs as a plain serverless function.
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js'

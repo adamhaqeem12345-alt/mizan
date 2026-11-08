@@ -4,12 +4,20 @@
   "installCommand": "npm ci",
   "buildCommand": "node scripts/sync.mjs --check || echo 'lib copies not checked (repo sources unavailable)'",
   "outputDirectory": "public",
+  "redirects": [
+    { "source": "/v1/:path*", "has": [{ "type": "host", "value": "mizan.api.cuddleia.com" }], "destination": "https://api.cuddleia.com/mizan/v1/:path*", "statusCode": 308 },
+    { "source": "/", "has": [{ "type": "host", "value": "mizan.api.cuddleia.com" }], "destination": "https://api.cuddleia.com/mizan/v1", "statusCode": 308 },
+    { "source": "/mcp", "has": [{ "type": "host", "value": "mizan.mcp.cuddleia.com" }], "destination": "https://mcp.cuddleia.com/mizan", "statusCode": 308 },
+    { "source": "/", "has": [{ "type": "host", "value": "mizan.mcp.cuddleia.com" }], "destination": "https://mcp.cuddleia.com/", "statusCode": 308 }
+  ],
   "rewrites": [
-    { "source": "/mcp", "destination": "/api/mcp" },
-    { "source": "/", "has": [{ "type": "host", "value": "mizan.mcp.cuddleia.com" }], "destination": "/api/mcp-info" },
-    { "source": "/", "destination": "/api/v1?route=" },
-    { "source": "/v1", "destination": "/api/v1?route=" },
-    { "source": "/v1/:route*", "destination": "/api/v1?route=:route*" }
+    { "source": "/", "has": [{ "type": "host", "value": "mcp.cuddleia.com" }], "destination": "/api/mcp-info" },
+    { "source": "/", "destination": "/api/catalog" },
+    { "source": "/mizan", "has": [{ "type": "host", "value": "mcp.cuddleia.com" }], "destination": "/api/mcp" },
+    { "source": "/mizan/mcp", "destination": "/api/mcp" },
+    { "source": "/mizan", "destination": "/api/v1?route=" },
+    { "source": "/mizan/v1", "destination": "/api/v1?route=" },
+    { "source": "/mizan/v1/:route*", "destination": "/api/v1?route=:route*" }
   ],
   "headers": [
     {

@@ -64,3 +64,10 @@ test('MCP initialize, list tools, call a tool', async () => {
   assert.equal(body.shariahCompliant, false)
   assert.match(body.disclaimer, /not investment advice/)
 })
+
+test('catalogs list the Mizan endpoints', async () => {
+  const { GET: catalog } = await import('../api/catalog.js')
+  const { GET: mcpInfo } = await import('../api/mcp-info.js')
+  assert.equal((await catalog().json()).products.mizan.api, 'https://api.cuddleia.com/mizan/v1')
+  assert.equal((await mcpInfo().json()).servers.mizan.endpoint, 'https://mcp.cuddleia.com/mizan')
+})
