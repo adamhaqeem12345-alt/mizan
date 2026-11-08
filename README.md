@@ -140,15 +140,22 @@ It deploys to Vercel with `vercel.json`: the static app plus one function,
 
 ### Updating the SC list
 
+One command, with the "Total" from the SC's Table 3 as a cross-check:
+
 ```bash
-pdftotext -raw "List of Shariah-compliant securities <Month Year>.pdf" list.txt
-node mizan/scripts/import-sc-list.mjs list.txt <YYYY-MM-DD> > mizan/data/sc-shariah-list-<YYYY-MM-DD>.json
+# Preview the changes; writes nothing
+node mizan/scripts/update-sc-list.mjs "List of Shariah-compliant securities <Month Year>.pdf" <YYYY-MM-DD> --expect-stocks <Table 3 total> --dry-run
+# Apply them
+node mizan/scripts/update-sc-list.mjs "List of Shariah-compliant securities <Month Year>.pdf" <YYYY-MM-DD> --expect-stocks <Table 3 total>
 ```
 
-Check that `counts.stocks` matches the total in the SC's Table 3. Then copy the
-file to `default/skills/mizan-shariah/sc-shariah-list.json` (the agent's copy),
-point the `shariah-sc-list` guard's `listFile` at it, and update the import in
-`ui/src/mizan/scList.ts`.
+It reads the PDF through `pdftotext -raw`, compares the result with the current
+list, and stops if the total doesn't match Table 3 or most of the list seems to
+have vanished. Then it writes `mizan/data/sc-shariah-list-<date>.json` with a
+change report (`sc-list-changes-<date>.md`: added, removed, renamed), copies the
+list to the agent skill, points the guard, the web app, the tests and the cloud
+API at the new file, and refreshes the cloud copy. Removed stocks can still be
+sold but no longer bought. Tests: `node --test mizan/scripts/sc-list-lib.test.mjs`.
 
 ## Where things live
 
