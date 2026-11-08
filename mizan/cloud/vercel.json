@@ -1,0 +1,23 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "npm ci",
+  "buildCommand": "node scripts/sync.mjs --check || echo 'lib copies not checked (repo sources unavailable)'",
+  "outputDirectory": "public",
+  "rewrites": [
+    { "source": "/mcp", "destination": "/api/mcp" },
+    { "source": "/", "has": [{ "type": "host", "value": "mizan.mcp.cuddleia.com" }], "destination": "/api/mcp-info" },
+    { "source": "/", "destination": "/api/v1?route=" },
+    { "source": "/v1", "destination": "/api/v1?route=" },
+    { "source": "/v1/:route*", "destination": "/api/v1?route=:route*" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    }
+  ]
+}

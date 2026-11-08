@@ -1,0 +1,48 @@
+# Mizan cloud: public API and MCP server
+
+Read-only services built on the same data and maths as the Mizan dashboard.
+
+| | URL |
+|---|---|
+| API | https://mizan.api.cuddleia.com |
+| MCP | https://mizan.mcp.cuddleia.com/mcp |
+
+## API
+
+| Endpoint | Returns |
+|---|---|
+| `GET /v1/list` | SC Shariah list date, counts, next expected update |
+| `GET /v1/shariah/{code}` | Shariah status of a Bursa code, e.g. `/v1/shariah/5347` |
+| `GET /v1/stocks?q=&limit=` | Search Shariah-compliant stocks by name or code |
+| `GET /v1/prices/{code}?days=` | Daily prices (Yahoo Finance, delayed), up to 1300 days |
+| `GET /v1/forecast/{code}?horizon=` | 80% price range over 5–60 trading days, with its past hit rate |
+
+Responses are JSON, CORS-open and cached at the edge (list data for a day,
+prices for an hour).
+
+## MCP
+
+Stateless Streamable HTTP with JSON responses, no sign-in. Tools:
+`check_shariah_status`, `search_shariah_stocks`, `get_price_history`,
+`get_forecast_range`, `get_sc_list_info`. The server's instructions tell the
+model to explain and never give buy, sell or hold advice.
+
+```bash
+claude mcp add --transport http mizan https://mizan.mcp.cuddleia.com/mcp
+```
+
+## Development
+
+```bash
+npm ci
+npm test              # API routes and an MCP handshake
+npm run sync          # refresh lib/ from the dashboard code and SC list
+```
+
+`lib/forecast.js`, `lib/bars.js` and `lib/sc-list.json` are generated copies of
+`ui/src/mizan/forecast.ts`, `api/bars.js` and the SC list in `mizan/data/`.
+The Vercel build runs `sync --check` and reports stale copies. After updating
+the SC list, change `SC_LIST` in `scripts/sync.mjs` and run `npm run sync`.
+
+Deployed as the Vercel project `mizan-cloud` with this folder as its root.
+Not investment advice.

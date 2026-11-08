@@ -1,0 +1,20 @@
+{
+  "name": "mizan-cloud",
+  "private": true,
+  "type": "module",
+  "description": "Mizan public API (mizan.api.cuddleia.com) and MCP server (mizan.mcp.cuddleia.com)",
+  "license": "AGPL-3.0-only",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "sync": "node scripts/sync.mjs",
+    "check-sync": "node scripts/sync.mjs --check",
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3"
+  }
+}
