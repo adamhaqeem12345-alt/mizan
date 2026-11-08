@@ -17,7 +17,12 @@
     { "source": "/mizan/mcp", "destination": "/api/mcp" },
     { "source": "/mizan", "destination": "/api/v1?route=" },
     { "source": "/mizan/v1", "destination": "/api/v1?route=" },
-    { "source": "/mizan/v1/:route*", "destination": "/api/v1?route=:route*" }
+    { "source": "/mizan/v1/:route*", "destination": "/api/v1?route=:route*" },
+    { "source": "/serambi", "has": [{ "type": "host", "value": "mcp.cuddleia.com" }], "destination": "https://pms.cuddleia.com/api/public/mcp" },
+    { "source": "/serambi/mcp", "destination": "https://pms.cuddleia.com/api/public/mcp" },
+    { "source": "/serambi", "destination": "https://pms.cuddleia.com/api/public/v1" },
+    { "source": "/serambi/v1", "destination": "https://pms.cuddleia.com/api/public/v1" },
+    { "source": "/serambi/v1/:path*", "destination": "https://pms.cuddleia.com/api/public/v1/:path*" }
   ],
   "headers": [
     {

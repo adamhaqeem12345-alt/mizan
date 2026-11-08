@@ -16,6 +16,16 @@ export function GET() {
         source: 'https://github.com/adamhaqeem12345-alt/mizan',
         disclaimer: 'Demo and learning tool. Not investment advice.',
       },
+      serambi: {
+        endpoint: 'https://mcp.cuddleia.com/serambi',
+        auth: 'none (public, read-only; no guest data)',
+        tools: ['list_properties', 'get_property', 'check_availability'],
+        connect: {
+          claudeCode: 'claude mcp add --transport http serambi https://mcp.cuddleia.com/serambi',
+          other: 'Add a remote MCP server with the endpoint URL in your AI app.',
+        },
+        api: 'https://api.cuddleia.com/serambi/v1',
+      },
     },
   }, { headers: { 'cache-control': 'public, s-maxage=86400' } })
 }
