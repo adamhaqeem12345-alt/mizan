@@ -1,3 +1,5 @@
+> **Retired on 2026-11-15.** Mizan is now **[Calyxia Terminal](https://calyxia.cuddleia.com)**, a Shariah-first paper trading desk for Bursa Malaysia. mizan.cuddleia.com redirects there. The public API and MCP moved to `api.cuddleia.com/calyxia/v1` and `mcp.cuddleia.com/calyxia` (the old `/mizan` paths answer until 2027-02-15). This repository is archived and kept public under the AGPL-3.0 licence of the OpenAlice project it is built on.
+
 <p align="center">
   <img src="ui/public/mizan.svg" alt="Mizan" width="72">
 </p>
